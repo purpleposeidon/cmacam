@@ -1,9 +1,45 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import subprocess
 from subprocess import PIPE
 
+
+def exists(cmd):
+  witch = subprocess.Popen(["which", cmd], stdout=PIPE, stdin=PIPE)
+  w = witch.stdout.read()
+  witch.stdin.close()
+  witch.wait()
+  return bool(w.strip())
+
+def dep_check():
+  missing = ''
+  if not exists("jbofihe"):
+    missing += """Requires jbofihe. Do
+  sudo apt-get install jbofihe
+under any fine Linux distribution.\n"""
+  if not exists("camxes"):
+    bin = os.path.join(os.environ["HOME"], 'bin/')
+    #bin = "~/bin/"
+    assert bin[-1] == '/'
+    missing += """Requires camxes. Running these commands will probably get camxes running:
+
+######
+mkdir -p BIN/.camxes_jar
+cd BIN/.camxes_jar
+wget http://www.digitalkingdom.org/~rlpowell/hobbies/lojban/grammar/rats/lojban_peg_parser.jar
+cat << EOF > BIN/camxes
+#!/bin/sh
+cd BIN/.camxes_jar
+java -Xss64m -jar lojban_peg_parser.jar $@
+EOF
+chmod +x BIN/camxes""".replace("BIN/", bin)
+    
+    if not bin in os.environ["PATH"]:
+      missing += '\nexport PATH="$PATH:BIN/"'.replace("BIN/", bin)
+    missing += "\n######\n"
+  if missing: raise SystemExit(missing)
 
 
 def get_cmaf(word):
@@ -38,4 +74,5 @@ def parse_gloss():
 
 
 if __name__ == '__main__':
+  dep_check()
   parse_gloss()
