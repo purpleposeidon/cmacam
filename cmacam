@@ -1,0 +1,36 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import subprocess
+from subprocess import PIPE
+
+
+
+def get_cmaf(word):
+  cmafihe = subprocess.Popen("cmafihe", stdin=PIPE, stdout=PIPE)
+  cmafihe.stdin.write(word+'\n')
+  cmafihe.stdin.close()
+  d = cmafihe.stdout.readline()
+  cmafihe.wait()
+  d.strip()
+  return d[d.find('[')+1:d.find(']')]
+
+def parse_gloss():
+  camxes = subprocess.Popen("camxes", stdout=PIPE)
+  try:
+    while 1:
+      line = camxes.stdout.readline()
+      if not line: break
+      if ':' in line:
+        head, tail = line.split(':')
+        tail = tail.strip()
+        d = get_cmaf(tail)
+        print line.strip('\n') + " [%s]" % (d,)
+      else:
+        print line.strip('\n')
+  finally:
+    camxes.wait()
+
+
+if __name__ == '__main__':
+  parse_gloss()
