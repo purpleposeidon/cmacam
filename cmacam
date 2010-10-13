@@ -13,7 +13,9 @@ def get_cmaf(word):
   d = cmafihe.stdout.readline()
   cmafihe.wait()
   d.strip()
-  return d[d.find('[')+1:d.find(']')]
+  gloss = d[d.find('[')+1:d.find(']')]
+  gloss = gloss.strip()
+  return gloss
 
 def parse_gloss():
   camxes = subprocess.Popen("camxes", stdout=PIPE)
@@ -24,8 +26,11 @@ def parse_gloss():
       if ':' in line:
         head, tail = line.split(':')
         tail = tail.strip()
-        d = get_cmaf(tail)
-        print line.strip('\n') + " [%s]" % (d,)
+        gloss = get_cmaf(tail)
+        if gloss:
+          print line.strip('\n') + " [%s]" % (gloss,)
+        else:
+          print line.strip('\n')
       else:
         print line.strip('\n')
   finally:
