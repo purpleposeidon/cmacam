@@ -1,5 +1,26 @@
+Forges an unholy alliance with cmafihe and camxes.
+
+
 Requires these commands:
   cmafihe (jbofihe)
   camxes
 
 
+Example:
+  $ cmacam 
+  do xu nelci la .cmacam.
+  text
+     sentence
+     |- KOhAClause
+     |  |- CMAVO
+     |  |     KOhA: do [you]
+     |  |- CMAVO
+     |        UI: xu [yes/no?]
+     |- bridiTail3
+        |- BRIVLA
+        |     gismu: nelci [fond]
+        |- sumti6
+           |- CMAVO
+           |     LA: la
+           |- CMENE
+                 cmene: cmacam
