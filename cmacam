@@ -4,6 +4,7 @@
 import os
 import subprocess
 from subprocess import PIPE
+import readline
 
 
 def exists(cmd):
@@ -43,7 +44,8 @@ chmod +x BIN/camxes""".replace("BIN/", bin)
 
 
 def get_cmaf(word):
-  cmafihe = subprocess.Popen("cmafihe", stdin=PIPE, stdout=PIPE)
+  cmafihe = subprocess.Popen("cmafihe", stdin=PIPE, stdout=PIPE, stderr=PIPE)
+  word = word.lower() #helps with ye accents
   cmafihe.stdin.write(word+'\n')
   cmafihe.stdin.close()
   d = cmafihe.stdout.readline()
