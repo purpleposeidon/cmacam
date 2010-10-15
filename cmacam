@@ -6,6 +6,12 @@ import subprocess
 from subprocess import PIPE
 import readline
 
+try:
+  import jbo
+  entries = jbo.dbopenbuild("entries").thing
+except:
+  jbo = None
+  entries = None
 
 def exists(cmd):
   witch = subprocess.Popen(["which", cmd], stdout=PIPE, stdin=PIPE)
@@ -16,10 +22,13 @@ def exists(cmd):
 
 def dep_check():
   missing = ''
-  if not exists("jbofihe"):
-    missing += """Requires jbofihe. Do
+  if not jbo and not exists("cmafihe"):
+    missing += """Requires cmafihe, or jbo.py. Do
   sudo apt-get install jbofihe
-under any fine Linux distribution.\n"""
+under any fine Linux distribution.
+
+It is better to use jbo.py , though it may be harder to install.
+It can be gotten from http://github.com/dag/jbo/"""
   if not exists("camxes"):
     bin = os.path.join(os.environ["HOME"], 'bin/')
     #bin = "~/bin/"
@@ -55,6 +64,13 @@ def get_cmaf(word):
   gloss = gloss.strip()
   return gloss
 
+def get_def(word):
+  word = word.strip().lower()
+  if entries:
+    return entries[word].definition
+  else:
+    return get_cmaf(word)
+
 def parse_gloss():
   camxes = subprocess.Popen("camxes", stdout=PIPE)
   try:
@@ -63,8 +79,7 @@ def parse_gloss():
       if not line: break
       if ':' in line:
         head, tail = line.split(':')
-        tail = tail.strip()
-        gloss = get_cmaf(tail)
+        gloss = get_def(tail)
         if gloss:
           print line.strip('\n') + " [%s]" % (gloss,)
         else:
